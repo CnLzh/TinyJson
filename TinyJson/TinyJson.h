@@ -1,0 +1,93 @@
+#ifndef TINYJSON_H__
+#define TINYJSON_H__
+
+/*
+
+Purpose:	TinyJson
+Author:		CnLzh
+Date:		2020/6/22
+
+
+*/
+
+/*---------- ----------*/
+
+#include<string>
+
+namespace tjson
+{
+	/*----------Json基础类型----------*/
+
+	enum class JsonType
+	{
+		JSON_NULL,		//null
+		JSON_FALSE,		//false
+		JSON_TRUE,		//true
+		JSON_NUMBER,	//number
+		JSON_STRING,	//string
+		JSON_ARRAY,		//array
+		JSON_OBJECT,	//object
+		JSON_TEST		//测试类型
+	};
+
+	/*----------返回值类型----------*/
+
+	enum
+	{
+		JSON_PARSE_OK = 0,
+		JSON_PARSE_EXPECT_VALUE,		//只有空白值
+		JSON_PARSE_INVALID_VALUE,		//不是字面值
+		JSON_PARSE_ROOT_NOT_SINGULAR	//一个值后空白后还有字符
+	};
+
+	/*----------Json节点----------*/
+
+	class JsonNode
+	{
+	public:
+		//Json type
+		JsonType type;
+		//Json string
+		std::string json;
+
+	private:
+		/*----------内部函数----------*/
+
+		//分析空白
+		void ParseWhitespace();
+		//分析NULL
+		int ParseNull();
+		//分析true
+		int ParseTrue();
+		//分析false
+		int ParseFalse();
+		//分析工厂函数
+		int ParseFactory();
+		//截取json
+		void SubJson(const int& pos);
+
+	public:
+		/*----------接口函数----------*/
+
+		//解析Json字符串
+		int Parse();
+		//获取Json type
+		JsonType GetType() const;
+
+	public:
+		/*----------构造函数----------*/
+
+		JsonNode() = default;
+		JsonNode(const std::string& str, const JsonType& type);
+
+	};
+
+
+}
+
+
+
+
+
+
+#endif // !TINYJSON_H__
