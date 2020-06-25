@@ -24,4 +24,4 @@
 
 ## 测试
 
-如果您想要运行[`test.cpp`](https://github.com/CnLzh/TinyJson/TinyJson/test.cpp)，请配置[`googletest`](https://github.com/google/googletest)运行环境，详情请参考[`Generic Build Instructions `](https://github.com/google/googletest/blob/master/googletest/README.md)。
+如果您想要运行[`test.cpp`](https://github.com/CnLzh/TinyJson/blob/master/TinyJson/TinyJson.cpp)，请配置[`googletest`](https://github.com/google/googletest)运行环境，详情请参考[`Generic Build Instructions `](https://github.com/google/googletest/blob/master/googletest/README.md)。
