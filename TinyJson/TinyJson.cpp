@@ -1,8 +1,13 @@
 #include"TinyJson.h"
 
 #include<iterator>
+#include<sstream>
+#include<regex>
+#include<sstream>
 
 using namespace tjson;
+
+/*----------内部函数----------*/
 
 void JsonNode::ParseWhitespace()
 {
@@ -15,30 +20,20 @@ void JsonNode::ParseWhitespace()
 	this->json = p;
 }
 
-int JsonNode::ParseNull()
+void JsonNode::SubJson(const int& pos)
 {
-	if (this->json.compare(0, 4, "null"))
-		return JSON_PARSE_INVALID_VALUE;
-	this->SubJson(4);
-	this->type = JsonType::JSON_NULL;
-	return JSON_PARSE_OK;
+	if (this->json.size() == pos)
+		this->json = "";
+	else
+		this->json = std::move(this->json.substr(pos + 1));
 }
 
-int JsonNode::ParseTrue()
+int JsonNode::ParseLiteral(const std::string& str, const JsonType& type)
 {
-	if (this->json.compare(0, 4, "true"))
+	if (this->json.compare(0, str.size(), str))
 		return JSON_PARSE_INVALID_VALUE;
-	this->SubJson(4);
-	this->type = JsonType::JSON_TRUE;
-	return JSON_PARSE_OK;
-}
-
-int JsonNode::ParseFalse()
-{
-	if (this->json.compare(0, 5, "false"))
-		return JSON_PARSE_INVALID_VALUE;
-	this->SubJson(5);
-	this->type = JsonType::JSON_FALSE;
+	this->SubJson(str.size());
+	this->type = type;
 	return JSON_PARSE_OK;
 }
 
@@ -49,20 +44,31 @@ int JsonNode::ParseFactory()
 
 	switch (*this->json.begin())
 	{
-	case 'n':	return ParseNull();
-	case 't': return ParseTrue();
-	case 'f': return ParseFalse();
-	default:	return JSON_PARSE_INVALID_VALUE;
+	case 'n':	return ParseLiteral("null", JsonType::JSON_NULL);
+	case 't':	return ParseLiteral("true", JsonType::JSON_TRUE);
+	case 'f':	return ParseLiteral("false", JsonType::JSON_FALSE);
+	default:	return ParseNumber();
 	}
 }
 
-void JsonNode::SubJson(const int& pos)
+int JsonNode::ParseNumber()
 {
-	if (this->json.size() == pos)
-		this->json = "";
-	else
-		this->json = std::move(this->json.substr(pos + 1));
+	std::regex reg("-?(\\d+|\\d+\\.\\d+)((E|e)[+-]?\\d+)?\\s*");
+	if (!std::regex_match(this->json, reg))
+		return JSON_PARSE_INVALID_VALUE;
+
+	std::stringstream sstr(this->json);
+	sstr >> this->number;
+
+	if (errno == ERANGE || this->number == HUGE_VAL || this->number == -HUGE_VAL)
+		return JSON_PARSE_NUMBER_TOO_BIG;
+
+	this->json = "";
+	this->type = JsonType::JSON_NUMBER;
+	return JSON_PARSE_OK;
 }
+
+/*----------接口函数----------*/
 
 int JsonNode::Parse()
 {
@@ -82,8 +88,15 @@ JsonType JsonNode::GetType() const
 	return this->type;
 }
 
+double JsonNode::GetNumber() const
+{
+	return this->number;
+}
+
+/*----------构造函数----------*/
+
 JsonNode::JsonNode(const std::string& str, const JsonType& type)
-	:json(str), type(type)
+	:json(str), type(type), number(0.0)
 {
 
 }

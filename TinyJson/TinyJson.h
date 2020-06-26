@@ -37,7 +37,8 @@ namespace tjson
 		JSON_PARSE_OK = 0,
 		JSON_PARSE_EXPECT_VALUE,		//只有空白值
 		JSON_PARSE_INVALID_VALUE,		//不是字面值
-		JSON_PARSE_ROOT_NOT_SINGULAR	//一个值后空白后还有字符
+		JSON_PARSE_ROOT_NOT_SINGULAR,	//一个值后空白后还有字符
+		JSON_PARSE_NUMBER_TOO_BIG		//number超过表示范围
 	};
 
 	/*----------Json节点----------*/
@@ -49,22 +50,23 @@ namespace tjson
 		JsonType type;
 		//Json string
 		std::string json;
+		//Json number
+		double number;
+
 
 	private:
 		/*----------内部函数----------*/
 
 		//分析空白
 		void ParseWhitespace();
-		//分析NULL
-		int ParseNull();
-		//分析true
-		int ParseTrue();
-		//分析false
-		int ParseFalse();
+		//分析字面值
+		int ParseLiteral(const std::string& str, const JsonType& type);
 		//分析工厂函数
 		int ParseFactory();
 		//截取json
 		void SubJson(const int& pos);
+		//分析Number
+		int ParseNumber();
 
 	public:
 		/*----------接口函数----------*/
@@ -73,6 +75,8 @@ namespace tjson
 		int Parse();
 		//获取Json type
 		JsonType GetType() const;
+		//获取Json number
+		double GetNumber() const;
 
 	public:
 		/*----------构造函数----------*/
