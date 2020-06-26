@@ -7,7 +7,7 @@
 
 using namespace tjson;
 
-/*----------ÄÚ²¿º¯Êý----------*/
+/*----------å†…éƒ¨å‡½æ•°----------*/
 
 void JsonNode::ParseWhitespace()
 {
@@ -20,9 +20,9 @@ void JsonNode::ParseWhitespace()
 	this->json = p;
 }
 
-void JsonNode::SubJson(const int& pos)
+void JsonNode::SubJson(const size_t& pos)
 {
-	if (this->json.size() == pos)
+	if (this->json.length() == pos)
 		this->json = "";
 	else
 		this->json = std::move(this->json.substr(pos + 1));
@@ -58,9 +58,9 @@ int JsonNode::ParseNumber()
 		return JSON_PARSE_INVALID_VALUE;
 
 	std::stringstream sstr(this->json);
-	sstr >> this->number;
+	sstr >> std::get<double>(this->var);
 
-	if (errno == ERANGE || this->number == HUGE_VAL || this->number == -HUGE_VAL)
+	if (errno == ERANGE || std::get<double>(this->var) == HUGE_VAL || std::get<double>(this->var) == -HUGE_VAL)
 		return JSON_PARSE_NUMBER_TOO_BIG;
 
 	this->json = "";
@@ -68,7 +68,7 @@ int JsonNode::ParseNumber()
 	return JSON_PARSE_OK;
 }
 
-/*----------½Ó¿Úº¯Êý----------*/
+/*----------æŽ¥å£å‡½æ•°----------*/
 
 int JsonNode::Parse()
 {
@@ -90,13 +90,13 @@ JsonType JsonNode::GetType() const
 
 double JsonNode::GetNumber() const
 {
-	return this->number;
+	return std::get<double>(this->var);
 }
 
-/*----------¹¹Ôìº¯Êý----------*/
+/*----------æž„é€ å‡½æ•°----------*/
 
 JsonNode::JsonNode(const std::string& str, const JsonType& type)
-	:json(str), type(type), number(0.0)
+	:json(str), type(type)
 {
 
 }

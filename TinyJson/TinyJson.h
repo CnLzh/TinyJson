@@ -13,10 +13,11 @@ Date:		2020/6/22
 /*---------- ----------*/
 
 #include<string>
+#include<variant>
 
 namespace tjson
 {
-	/*----------Json»ù´¡ÀàĞÍ----------*/
+	/*----------JsonåŸºç¡€ç±»å‹----------*/
 
 	enum class JsonType
 	{
@@ -27,21 +28,30 @@ namespace tjson
 		JSON_STRING,	//string
 		JSON_ARRAY,		//array
 		JSON_OBJECT,	//object
-		JSON_TEST		//²âÊÔÀàĞÍ
+		JSON_TEST		//æµ‹è¯•ç±»å‹
 	};
 
-	/*----------·µ»ØÖµÀàĞÍ----------*/
+	/*----------è¿”å›å€¼ç±»å‹----------*/
 
 	enum
 	{
 		JSON_PARSE_OK = 0,
-		JSON_PARSE_EXPECT_VALUE,		//Ö»ÓĞ¿Õ°×Öµ
-		JSON_PARSE_INVALID_VALUE,		//²»ÊÇ×ÖÃæÖµ
-		JSON_PARSE_ROOT_NOT_SINGULAR,	//Ò»¸öÖµºó¿Õ°×ºó»¹ÓĞ×Ö·û
-		JSON_PARSE_NUMBER_TOO_BIG		//number³¬¹ı±íÊ¾·¶Î§
+		JSON_PARSE_EXPECT_VALUE,		//åªæœ‰ç©ºç™½å€¼
+		JSON_PARSE_INVALID_VALUE,		//ä¸æ˜¯å­—é¢å€¼
+		JSON_PARSE_ROOT_NOT_SINGULAR,	//ä¸€ä¸ªå€¼åç©ºç™½åè¿˜æœ‰å­—ç¬¦
+		JSON_PARSE_NUMBER_TOO_BIG		//numberè¶…è¿‡è¡¨ç¤ºèŒƒå›´
 	};
 
-	/*----------Json½Úµã----------*/
+	/*----------Jsonå­—ç¬¦ä¸²ç±»å‹----------*/
+
+	class JsonString
+	{
+	public:
+		std::string str;
+		size_t len;
+	};
+
+	/*----------JsonèŠ‚ç‚¹----------*/
 
 	class JsonNode
 	{
@@ -50,41 +60,43 @@ namespace tjson
 		JsonType type;
 		//Json string
 		std::string json;
-		//Json number
-		double number;
+		//Json variant 
+		std::variant<double, JsonString> var;
 
 
 	private:
-		/*----------ÄÚ²¿º¯Êı----------*/
+		/*----------å†…éƒ¨å‡½æ•°----------*/
 
-		//·ÖÎö¿Õ°×
+		//åˆ†æç©ºç™½
 		void ParseWhitespace();
-		//·ÖÎö×ÖÃæÖµ
+		//åˆ†æå­—é¢å€¼
 		int ParseLiteral(const std::string& str, const JsonType& type);
-		//·ÖÎö¹¤³§º¯Êı
+		//åˆ†æå·¥å‚å‡½æ•°
 		int ParseFactory();
-		//½ØÈ¡json
-		void SubJson(const int& pos);
-		//·ÖÎöNumber
+		//æˆªå–json
+		void SubJson(const size_t& pos);
+		//åˆ†æNumber
 		int ParseNumber();
 
 	public:
-		/*----------½Ó¿Úº¯Êı----------*/
+		/*----------æ¥å£å‡½æ•°----------*/
 
-		//½âÎöJson×Ö·û´®
+		//è§£æJsonå­—ç¬¦ä¸²
 		int Parse();
-		//»ñÈ¡Json type
+		//è·å–Json type
 		JsonType GetType() const;
-		//»ñÈ¡Json number
+		//è·å–Json number
 		double GetNumber() const;
 
 	public:
-		/*----------¹¹Ôìº¯Êı----------*/
+		/*----------æ„é€ å‡½æ•°----------*/
 
 		JsonNode() = default;
 		JsonNode(const std::string& str, const JsonType& type);
 
 	};
+
+
 
 
 }
