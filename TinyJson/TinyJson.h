@@ -14,10 +14,12 @@ Date:		2020/6/22
 
 #include<string>
 #include<variant>
+#include<sstream>
+#include<regex>
 
 namespace tjson
 {
-	/*----------JsonåŸºç¡€ç±»å‹----------*/
+	/*----------Json»ù´¡ÀàĞÍ----------*/
 
 	enum class JsonType
 	{
@@ -28,30 +30,23 @@ namespace tjson
 		JSON_STRING,	//string
 		JSON_ARRAY,		//array
 		JSON_OBJECT,	//object
-		JSON_TEST		//æµ‹è¯•ç±»å‹
+		JSON_TEST		//²âÊÔÀàĞÍ
 	};
 
-	/*----------è¿”å›å€¼ç±»å‹----------*/
+	/*----------·µ»ØÖµÀàĞÍ----------*/
 
 	enum
 	{
 		JSON_PARSE_OK = 0,
-		JSON_PARSE_EXPECT_VALUE,		//åªæœ‰ç©ºç™½å€¼
-		JSON_PARSE_INVALID_VALUE,		//ä¸æ˜¯å­—é¢å€¼
-		JSON_PARSE_ROOT_NOT_SINGULAR,	//ä¸€ä¸ªå€¼åç©ºç™½åè¿˜æœ‰å­—ç¬¦
-		JSON_PARSE_NUMBER_TOO_BIG		//numberè¶…è¿‡è¡¨ç¤ºèŒƒå›´
+		JSON_PARSE_EXPECT_VALUE,		//Ö»ÓĞ¿Õ°×Öµ
+		JSON_PARSE_INVALID_VALUE,		//²»ÊÇ×ÖÃæÖµ
+		JSON_PARSE_ROOT_NOT_SINGULAR,	//Ò»¸öÖµºó¿Õ°×ºó»¹ÓĞ×Ö·û
+		JSON_PARSE_NUMBER_TOO_BIG,		//number³¬¹ı±íÊ¾·¶Î§
+		JSON_PARSE_MISS_QUOTATION_MARK	//×Ö·û´®ºóÃ»ÓĞÒıºÅ
 	};
 
-	/*----------Jsonå­—ç¬¦ä¸²ç±»å‹----------*/
 
-	class JsonString
-	{
-	public:
-		std::string str;
-		size_t len;
-	};
-
-	/*----------JsonèŠ‚ç‚¹----------*/
+	/*----------Json½Úµã----------*/
 
 	class JsonNode
 	{
@@ -61,35 +56,40 @@ namespace tjson
 		//Json string
 		std::string json;
 		//Json variant 
-		std::variant<double, JsonString> var;
+		std::variant<double, std::string> var;
 
 
 	private:
-		/*----------å†…éƒ¨å‡½æ•°----------*/
+		/*----------ÄÚ²¿º¯Êı----------*/
 
-		//åˆ†æç©ºç™½
+		//·ÖÎö¿Õ°×
 		void ParseWhitespace();
-		//åˆ†æå­—é¢å€¼
+		//·ÖÎö×ÖÃæÖµ
 		int ParseLiteral(const std::string& str, const JsonType& type);
-		//åˆ†æå·¥å‚å‡½æ•°
+		//·ÖÎö¹¤³§º¯Êı
 		int ParseFactory();
-		//æˆªå–json
+		//½ØÈ¡json
 		void SubJson(const size_t& pos);
-		//åˆ†æNumber
+		//·ÖÎöNumber
 		int ParseNumber();
+		//·ÖÎöstring
+		int ParseString();
+		//ÉèÖÃstring
+		void SetString(std::string& str);
 
 	public:
-		/*----------æ¥å£å‡½æ•°----------*/
+		/*----------½Ó¿Úº¯Êı----------*/
 
-		//è§£æJsonå­—ç¬¦ä¸²
+		//½âÎöJson×Ö·û´®
 		int Parse();
-		//è·å–Json type
+		//»ñÈ¡Json type
 		JsonType GetType() const;
-		//è·å–Json number
+		//»ñÈ¡Json number
 		double GetNumber() const;
 
+
 	public:
-		/*----------æ„é€ å‡½æ•°----------*/
+		/*----------¹¹Ôìº¯Êı----------*/
 
 		JsonNode() = default;
 		JsonNode(const std::string& str, const JsonType& type);
@@ -98,12 +98,6 @@ namespace tjson
 
 
 
-
 }
-
-
-
-
-
 
 #endif // !TINYJSON_H__
