@@ -1,8 +1,13 @@
-﻿#include<gtest/gtest.h>
+﻿#define _CRTDBG_MAP_ALLOC  
+#include <stdlib.h>  
+#include <crtdbg.h>
+
+#include<gtest/gtest.h>
 #include<variant>
 
 #include"TinyJson.h"
 using namespace tjson;
+
 
 TEST(TES_TPARSE_NULL, TEST_GET_NULL)
 {
@@ -135,11 +140,13 @@ TEST(TEST_PARSE_STRING, TEST_GET_STRING)
 	TestString("Hello", "\"Hello\"");
 }
 
+
+
 int main()
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	testing::InitGoogleTest();
-	return RUN_ALL_TESTS();
-	return 0;
+	return	RUN_ALL_TESTS();
 }
 
 

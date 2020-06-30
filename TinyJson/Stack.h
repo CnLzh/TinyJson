@@ -3,6 +3,7 @@
 
 #include"Allocator.h"
 
+
 class Stack
 {
 private:

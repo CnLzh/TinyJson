@@ -4,7 +4,6 @@
 #include"TinyJson.h"
 #include"Stack.h"
 
-#include<iostream>
 namespace tjson
 {
 
@@ -91,7 +90,7 @@ namespace tjson
 	void JsonNode::SetString(std::string str, const int& size)
 	{
 
-		this->var = str.substr(0, size);
+		this->var = std::move(str.substr(0, size));
 		this->type = JsonType::JSON_STRING;
 
 	}
