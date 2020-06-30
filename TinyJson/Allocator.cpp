@@ -2,9 +2,9 @@
 
 #include<iostream>
 
-void* Allocator::Relloc(const void* _ptr, const size_t& _newsize)
+void* Allocator::Realloc(void* _ptr, const size_t& _newsize)
 {
-	return Relloc(_ptr, _newsize);
+	return realloc(_ptr, _newsize);
 }
 
 void Allocator::Free(void* _ptr)

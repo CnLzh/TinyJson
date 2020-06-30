@@ -4,7 +4,7 @@
 class Allocator
 {
 public:
-	static void* Relloc(const void* _ptr, const size_t& _newsize);
+	static void* Realloc(void* _ptr, const size_t& _newsize);
 	static void Free(void* _ptr);
 };
 

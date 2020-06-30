@@ -4,6 +4,7 @@
 #include"TinyJson.h"
 #include"Stack.h"
 
+#include<iostream>
 namespace tjson
 {
 
@@ -71,13 +72,14 @@ namespace tjson
 	int JsonNode::ParseString()
 	{
 		Stack _stack;
-		for (int i = 1; i < std::get<std::string>(this->var).length(); i++)
+		for (int i = 1; i < this->json.length(); i++)
 		{
-			char tmp = std::get<std::string>(this->var)[i];
+			char tmp = this->json[i];
 			switch (tmp)
 			{
 			case '\"':
-				SetString(*_stack.Pop<std::string>(i - 1));
+				SetString(_stack.Pop<char>(i - 1), i - 1);
+				this->SubJson(i);
 				return JSON_PARSE_OK;
 			default:
 				*_stack.Push<char>() = tmp;
@@ -86,9 +88,10 @@ namespace tjson
 		return JSON_PARSE_MISS_QUOTATION_MARK;
 	}
 
-	void JsonNode::SetString(std::string& str)
+	void JsonNode::SetString(std::string str, const int& size)
 	{
-		this->var = std::move(str);
+
+		this->var = str.substr(0, size);
 		this->type = JsonType::JSON_STRING;
 
 	}
@@ -115,8 +118,13 @@ namespace tjson
 	double JsonNode::GetNumber() const
 	{
 		return std::get<double>(this->var);
+
 	}
 
+	std::string JsonNode::GetString() const
+	{
+		return std::get<std::string>(this->var);
+	}
 
 
 	/*----------¹¹Ôìº¯Êý----------*/

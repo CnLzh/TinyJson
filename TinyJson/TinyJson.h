@@ -75,7 +75,7 @@ namespace tjson
 		//分析string
 		int ParseString();
 		//设置string
-		void SetString(std::string& str);
+		void SetString(std::string str, const int& size);
 
 	public:
 		/*----------接口函数----------*/
@@ -86,6 +86,8 @@ namespace tjson
 		JsonType GetType() const;
 		//获取Json number
 		double GetNumber() const;
+		//获取json string
+		std::string GetString() const;
 
 
 	public:

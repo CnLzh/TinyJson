@@ -1,4 +1,5 @@
 ﻿#include<gtest/gtest.h>
+#include<variant>
 
 #include"TinyJson.h"
 using namespace tjson;
@@ -118,6 +119,20 @@ TEST(TEST_PARSE_ERROR_NUMBER, TEST_GET_ERROR_NUMBER)
 	TestErrorNumber(JSON_PARSE_INVALID_VALUE, "inf");
 	TestErrorNumber(JSON_PARSE_INVALID_VALUE, "NAN");
 	TestErrorNumber(JSON_PARSE_INVALID_VALUE, "nan");
+}
+
+inline void TestString(const std::string& str, const std::string& json)
+{
+	JsonNode node(json, JsonType::JSON_TEST);
+	EXPECT_EQ(node.Parse(), JSON_PARSE_OK);
+	EXPECT_EQ(node.GetType(), JsonType::JSON_STRING);
+	EXPECT_EQ(node.GetString(), str);
+}
+
+TEST(TEST_PARSE_STRING, TEST_GET_STRING)
+{
+	//TestString("", "\"\"");
+	TestString("Hello", "\"Hello\"");
 }
 
 int main()
